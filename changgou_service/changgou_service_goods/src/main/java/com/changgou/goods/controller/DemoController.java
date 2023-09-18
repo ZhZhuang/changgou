@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RequestMapping("/demo")
-@RestController  // =  @Controller + @RreponseBody
+@RestController  // = @Controller + @RreponseBody
 public class DemoController {
 
     @GetMapping("/test")
