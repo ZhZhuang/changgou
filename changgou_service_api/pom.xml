@@ -13,12 +13,12 @@
     <packaging>pom</packaging>
     <modules>
         <module>changgou_service_goods_api</module>
+        <module>changgou_service_order_api</module>
+        <module>changgou_service_config_api</module>
+        <module>changgou_service_business_api</module>
+        <module>changgou_service_system_api</module>
+        <module>changgou_service_user_api</module>
     </modules>
-
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -33,4 +33,5 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
 </project>
