@@ -104,4 +104,18 @@ public class BrandController {
     }
 
 
+    /**
+     * 根据分类名称查询品牌列表
+     * 测试：http://localhost:9001/brand/category/手机
+     *      http://localhost:9001/brand/category/%E6%89%8B%E6%9C%BA （postman中）
+     * @param category
+     * @return
+     */
+    @GetMapping("/category/{category}")
+    public Result findListByCategoryName(@PathVariable String category){
+        System.out.println(category);
+        List<Map> brandList = brandService.findListByCategoryName(category);
+        return new Result(true,StatusCode.OK,"查询成功",brandList);
+    }
+
 }
