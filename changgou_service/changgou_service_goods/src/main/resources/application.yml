@@ -1,3 +1,5 @@
+workerId: 0
+datacenterId: 0
 server:
   port: 9001
 spring:
