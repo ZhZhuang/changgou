@@ -16,12 +16,18 @@ public class ESManagerController {
     //private ESManagerService esManagerService;
 
 
+    /**
+     * ElasticSearch相关的操作，需要仔细思考
+     */
+
     //创建索引库结构
     @GetMapping("/create")
     public Result create(){
         esManagerService.createMappingAndIndex();
         return new Result(true, StatusCode.OK,"创建索引库结构成功");
     }
+
+
     //导入全部数据
     @GetMapping("/importAll")
     public Result importAll(){
