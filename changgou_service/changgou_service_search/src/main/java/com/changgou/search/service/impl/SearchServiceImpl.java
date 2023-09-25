@@ -28,10 +28,7 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -164,19 +161,60 @@ public class SearchServiceImpl implements SearchService {
             resultMap.put("rows",resultInfo.getContent());
 
             //封装品牌的分组结果
-           StringTerms brandTerms = (StringTerms) resultInfo.getAggregation(skuBrand);
-           List<String> brandList = brandTerms.getBuckets().stream().map(bucket -> bucket.getKeyAsString()).collect(Collectors.toList());
+            StringTerms brandTerms = (StringTerms) resultInfo.getAggregation(skuBrand);
+            List<String> brandList = brandTerms.getBuckets().stream().map(bucket -> bucket.getKeyAsString()).collect(Collectors.toList());
             resultMap.put("brandList",brandList);
 
             //封装规格分组结果
             StringTerms specTerms= (StringTerms) resultInfo.getAggregation(skuSpec);
             List<String> specList = specTerms.getBuckets().stream().map(bucket -> bucket.getKeyAsString()).collect(Collectors.toList());
-            resultMap.put("specList",specList);
+            resultMap.put("specList",this.formartSpec(specList));
 
             //当前页
             resultMap.put("pageNum",pageNum);
             return resultMap;
         }
         return null;
+    }
+
+    /**
+     * 原有数据
+     *  [
+     *         "{'颜色': '黑色', '尺码': '平光防蓝光-无度数电脑手机护目镜'}",
+     *         "{'颜色': '红色', '尺码': '150度'}",
+     *         "{'颜色': '黑色', '尺码': '150度'}",
+     *         "{'颜色': '黑色'}",
+     *         "{'颜色': '红色', '尺码': '100度'}",
+     *         "{'颜色': '红色', '尺码': '250度'}",
+     *         "{'颜色': '红色', '尺码': '350度'}",
+     *         "{'颜色': '黑色', '尺码': '200度'}",
+     *         "{'颜色': '黑色', '尺码': '250度'}"
+     *     ]
+     *
+     *    需要的数据格式
+     *    {
+     *        颜色:[黑色,红色],
+     *        尺码:[100度,150度]
+     *    }
+     */
+    public Map<String,Set<String>> formartSpec(List<String> specList){
+        Map<String,Set<String>> resultMap = new HashMap<>();
+        if (specList!=null && specList.size()>0){
+            for (String specJsonString : specList) {
+                //将json数据转换为map
+                Map<String,String> specMap = JSON.parseObject(specJsonString, Map.class);
+                for (String specKey : specMap.keySet()) {
+                    Set<String> specSet = resultMap.get(specKey);
+                    if (specSet == null){
+                        specSet = new HashSet<String>();
+                    }
+                    //将规格的值放入set中
+                    specSet.add(specMap.get(specKey));
+                    //将set放入map中
+                    resultMap.put(specKey,specSet);
+                }
+            }
+        }
+        return resultMap;
     }
 }
